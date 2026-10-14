@@ -1,0 +1,30 @@
+{
+  "name": "todo-tgbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --typecheck",
+    "build": "tsc .",
+    "dev": "node --env-file=.env --watch index.ts",
+    "dev-start": "node --env-file=.env index.ts",
+    "initial": "node --env-file=.env ./reminder_scripts/initial_scripts.ts",
+    "hourly": "node --env-file=.env ./reminder_scripts/hourly_scripts.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "grammy": "^1.46.0",
+    "mysql2": "^3.24.5"
+  }
+}
