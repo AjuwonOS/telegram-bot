@@ -1,5 +1,5 @@
 import express, { json } from "express";
-import { handleCompleteTodo, handleShowRemainningTodos, responseOnCompletionOfTodo, sendMessage, updateIscompleteTodos } from "./utils/functions.js";
+import { handleCompleteTodo, handleShowRemainningTodos } from "./utils/functions.js";
 const app = express();
 app.use(json());
 app.get("/", (req, res) => res.status(200).send({ message: "Welcome to Ajuwon's telegram Bot", success: true }));

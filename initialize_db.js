@@ -6,4 +6,4 @@ export const client = mysql.createPool({
     password: MYSQL_PASSWORD,
     user: MYSQL_USERNAME
 });
-await client.execute(TODO_TABLE);
+(async () => await client.execute(TODO_TABLE))();
