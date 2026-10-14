@@ -30,7 +30,7 @@ const today = new Date();
 const todaysDate = today.toISOString().split("T")[0];
 /* SQL CONSTANTS */
 export const SQL_CONSTANTS = {
-    set: {},
+    set: { todoForToday: `INSERT INTO todo(text) VALUE ` },
     get: {
         incompleteTodosFromPreviousDay: `SELECT text, id FROM todo WHERE iscomplete = 0 AND date < "${todaysDate}"`, //`
         incompleteTodosForToday: `SELECT text, id FROM todo WHERE iscomplete = 0 AND date = "${todaysDate}"`,

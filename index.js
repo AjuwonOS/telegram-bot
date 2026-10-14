@@ -1,8 +1,10 @@
 import express, { json } from "express";
-import { handleCompleteTodo, handleShowRemainningTodos } from "./utils/functions.js";
+import { createQuestionMarks, createQuestionMarksForValues, handleCompleteTodo, handleCreateNewTodos, handleShowRemainningTodos, insertTodos, } from "./utils/functions.js";
 const app = express();
 app.use(json());
-app.get("/", (req, res) => res.status(200).send({ message: "Welcome to Ajuwon's telegram Bot", success: true }));
+app.get("/", (req, res) => res
+    .status(200)
+    .send({ message: "Welcome to Ajuwon's telegram Bot", success: true }));
 app.post("/", async (req, res) => {
     try {
         if (!req.body.message)
@@ -23,6 +25,13 @@ app.post("/", async (req, res) => {
             return res
                 .status(200)
                 .send({ message: "Text received successfully.", success: true });
+        }
+        if (command === "/Add") {
+            const newTodos = text.split("\n").slice(1);
+            await handleCreateNewTodos(newTodos);
+            return res
+                .status(200)
+                .send({ message: "New todos added successfully", success: true });
         }
         return res.status(200).send({ message: "Unknown", success: false });
     }

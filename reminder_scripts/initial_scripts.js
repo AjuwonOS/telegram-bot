@@ -1,5 +1,4 @@
 import { closeDBConnection, formattedInitialMessage, getIncompleteTodosFromPreviousDay, sendMessage, } from "../utils/functions.js";
-
 (async () => {
     const TIME_INTERVAL = 1_000 * 15;
     let counter = 0;

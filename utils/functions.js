@@ -64,6 +64,15 @@ export async function getTodosById(questionMarks, todosId) {
         console.log(error);
     }
 }
+export async function insertTodos(questionMarks, todos) {
+    try {
+        const result = await execute(SQL_CONSTANTS.set.todoForToday + questionMarks, todos);
+        return result;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 /* FORMATTED BOT TEXTS */
 export function formattedInitialMessage(incompleteTodos = []) {
     let formattedText = "";
@@ -91,10 +100,12 @@ export function formattedHourlyMessage(incompleteTodosPreviousDays = [], incompl
             formattedText += `${i + 1}. ${incompleteTodosToday[i]?.text}-id: ${incompleteTodosToday[i]?.id}.\n`;
         }
     }
-    if (incompleteTodosPreviousDays.length < 1 &&
-        incompleteTodosToday.length < 1) {
-        formattedText += "Well done. All todos have been completed";
-    }
+    /* if (
+      incompleteTodosPreviousDays.length < 1 &&
+      incompleteTodosToday.length < 1
+    ) {
+      formattedText += "Well done. All todos have been completed";
+    } */
     return formattedText;
 }
 //test covered
@@ -110,7 +121,7 @@ export function responseOnCompletionOfTodo(todos = []) {
 /* BOT HANDLERS */
 export async function handleCompleteTodo(text) {
     const todosIdList = text.split(",").map((todo) => parseInt(todo));
-    const questionMarks = createQuestionMarks(todosIdList);
+    const questionMarks = createQuestionMarks(todosIdList.length);
     await updateIscompleteTodos(questionMarks, todosIdList);
     const completeTodo = await getTodosById(questionMarks, todosIdList);
     await sendMessage(responseOnCompletionOfTodo(completeTodo));
@@ -121,15 +132,32 @@ export async function handleShowRemainningTodos() {
     const hourlyMessage = formattedHourlyMessage(todosFromYesterday, todosForToday);
     await sendMessage(hourlyMessage);
 }
+export async function handleCreateNewTodos(newTodos) {
+    const numberOfQuestionMarks = createQuestionMarksForValues(newTodos.length);
+    await insertTodos(numberOfQuestionMarks, newTodos);
+    await handleShowRemainningTodos();
+}
 /* OTHERS */
 //test covered
-export function createQuestionMarks(todoStrings = []) {
-    if (todoStrings.length < 1)
-        throw new Error("Todo string array must have at least an element");
+export function createQuestionMarks(numberOfTodoStrings = 0) {
+    if (numberOfTodoStrings < 1)
+        throw new Error("Number of todo string must be great than 0");
     let questionMarks = "(";
-    todoStrings.forEach(() => (questionMarks += "?,"));
+    for (let i = 0; i < numberOfTodoStrings; i++) {
+        questionMarks += "?,";
+    }
     questionMarks = questionMarks.slice(0, -1);
     questionMarks += ")";
+    return questionMarks;
+}
+export function createQuestionMarksForValues(number = 0) {
+    if (number < 1)
+        throw new Error("Number of todo string must be great than 0");
+    let questionMarks = "";
+    for (let i = 0; i < number; i++) {
+        questionMarks += "(?),";
+    }
+    questionMarks = questionMarks.slice(0, -1);
     return questionMarks;
 }
 export async function closeDBConnection() {
