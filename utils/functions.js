@@ -100,12 +100,10 @@ export function formattedHourlyMessage(incompleteTodosPreviousDays = [], incompl
             formattedText += `${i + 1}. ${incompleteTodosToday[i]?.text}-id: ${incompleteTodosToday[i]?.id}.\n`;
         }
     }
-    /* if (
-      incompleteTodosPreviousDays.length < 1 &&
-      incompleteTodosToday.length < 1
-    ) {
-      formattedText += "Well done. All todos have been completed";
-    } */
+    if (incompleteTodosPreviousDays.length < 1 &&
+        incompleteTodosToday.length < 1) {
+        formattedText += "Well done. All todos have been completed";
+    }
     return formattedText;
 }
 //test covered

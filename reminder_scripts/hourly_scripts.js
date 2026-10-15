@@ -3,7 +3,7 @@ import { closeDBConnection, formattedHourlyMessage, getIncompleteTodosForToday, 
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
     const todosForToday = await getIncompleteTodosForToday();
     const hourlyMessage = formattedHourlyMessage(todosFromYesterday, todosForToday);
-    if (!hourlyMessage) {
+    if (hourlyMessage === "Well done. All todos have been completed") {
         closeDBConnection();
         process.exit(0);
     }
