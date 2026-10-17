@@ -10,7 +10,8 @@
     "dev": "node --env-file=../.env --watch index.js",
     "dev-start": "node --env-file=../.env index.js",
     "initial": "node --env-file=../.env ./reminder_scripts/initial_scripts.js",
-    "hourly": "node --env-file=../.env ./reminder_scripts/hourly_scripts.js"
+    "hourly": "node --env-file=../.env ./reminder_scripts/hourly_scripts.js",
+    "commit": "git add . && git commit -m "
   },
   "keywords": [],
   "author": "",

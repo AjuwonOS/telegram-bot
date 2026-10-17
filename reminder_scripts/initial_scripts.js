@@ -1,15 +1,16 @@
-import { closeDBConnection, formattedInitialMessage, getIncompleteTodosFromPreviousDay, sendMessage, } from "../utils/functions.js";
+import { closeDBConnection, formattedInitialMessage, getIncompleteTodosForToday, getIncompleteTodosFromPreviousDay, sendMessage, } from "../utils/functions.js";
+
+
 (async () => {
-    const TIME_INTERVAL = 1_000 * 60 * 15;
-    let counter = 0;
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
-    const initial_notifications = setInterval(async () => {
-        if (counter >= 5) {
-            clearInterval(initial_notifications);
-        }
-        const initialMessage = formattedInitialMessage(todosFromYesterday);
-        await sendMessage(initialMessage);
-        counter++;
-    }, TIME_INTERVAL);
+    const todosForToday = await getIncompleteTodosForToday();
+    
+    if (todosForToday.length > 0) {
+        await closeDBConnection();
+        return
+    }
+
+    const initialMessage = formattedInitialMessage(todosFromYesterday);
+    await sendMessage(initialMessage);
     await closeDBConnection();
 })();
