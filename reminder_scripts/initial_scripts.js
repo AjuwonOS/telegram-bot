@@ -1,15 +1,11 @@
 import { closeDBConnection, formattedInitialMessage, getIncompleteTodosForToday, getIncompleteTodosFromPreviousDay, sendMessage, } from "../utils/functions.js";
-
-
 (async () => {
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
     const todosForToday = await getIncompleteTodosForToday();
-    
-    if (todosForToday.length > 0) {
+    if (todosForToday && todosForToday.length > 0) {
         await closeDBConnection();
-        return
+        return;
     }
-
     const initialMessage = formattedInitialMessage(todosFromYesterday);
     await sendMessage(initialMessage);
     await closeDBConnection();
