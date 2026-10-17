@@ -1,6 +1,6 @@
 import { closeDBConnection, formattedInitialMessage, getIncompleteTodosFromPreviousDay, sendMessage, } from "../utils/functions.js";
 (async () => {
-    const TIME_INTERVAL = 1_000 * 15;
+    const TIME_INTERVAL = 1_000 * 60 * 15;
     let counter = 0;
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
     const initial_notifications = setInterval(async () => {
