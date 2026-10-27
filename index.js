@@ -1,5 +1,5 @@
 import express, { json } from "express";
-import { createQuestionMarks, createQuestionMarksForValues, handleCompleteTodo, handleCreateNewTodos, handleShowRemainningTodos, insertTodos, } from "./utils/functions.js";
+import { handleCompleteTodo, handleCreateNewTodos, handleShowRemainningTodos, insertMessage } from "./utils/functions.js";
 const app = express();
 app.use(json());
 app.get("/", (req, res) => res
@@ -11,7 +11,8 @@ app.post("/", async (req, res) => {
             return res
                 .status(200)
                 .send({ message: "Request is not a new text.", success: true });
-        const { message: { text }, } = req.body;
+        const { message: { text, message_id }, } = req.body;
+        await insertMessage(message_id, false, text);
         const command = text.split("\n")[0];
         if (command === "/Done" && text.split("\n").length > 1) {
             const completedText = text.split("\n")[1];

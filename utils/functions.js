@@ -22,6 +22,29 @@ export async function sendMessage(messageText) {
         console.log("The following error occured while trying to send message to the bot using fetch api", error);
     }
 }
+export async function deletMessages() {
+    try {
+        const messages = await getMessages();
+        const ids = messages?.map((mes) => mes.id);
+        const response = await fetch(TELEGRAM_API_ENDPOINTS.deleteMessages, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                message_ids: ids,
+            }),
+        });
+        if (!response.ok)
+            throw new Error(response.statusText);
+        const data = await response.json();
+        return data;
+    }
+    catch (error) {
+        console.log("The following error occured while trying to send message to the bot using fetch api", error);
+    }
+}
 /* SQL FUNCTIONS */
 //Base SQL functions
 async function execute(sql, params = []) {
@@ -68,6 +91,24 @@ export async function insertTodos(questionMarks, todos) {
     try {
         const result = await execute(SQL_CONSTANTS.set.todoForToday + questionMarks, todos);
         return result;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+export async function insertMessage(id, isBot, text) {
+    try {
+        const result = await execute(SQL_CONSTANTS.set.message, [id, isBot, text]);
+        return result;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+export async function getMessages() {
+    try {
+        const [rows] = await execute(SQL_CONSTANTS.get.messageId);
+        return rows;
     }
     catch (error) {
         console.log(error);
@@ -122,13 +163,16 @@ export async function handleCompleteTodo(text) {
     const questionMarks = createQuestionMarks(todosIdList.length);
     await updateIscompleteTodos(questionMarks, todosIdList);
     const completeTodo = await getTodosById(questionMarks, todosIdList);
-    await sendMessage(responseOnCompletionOfTodo(completeTodo));
+    const completeMessageResponse = responseOnCompletionOfTodo(completeTodo);
+    const res = await sendMessage(completeMessageResponse);
+    await insertMessage(res.result.message_id, true, completeMessageResponse);
 }
 export async function handleShowRemainningTodos() {
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
     const todosForToday = await getIncompleteTodosForToday();
     const hourlyMessage = formattedHourlyMessage(todosFromYesterday, todosForToday);
-    await sendMessage(hourlyMessage);
+    const res = await sendMessage(hourlyMessage);
+    await insertMessage(res.result.message_id, true, hourlyMessage);
 }
 export async function handleCreateNewTodos(newTodos) {
     const numberOfQuestionMarks = createQuestionMarksForValues(newTodos.length);
