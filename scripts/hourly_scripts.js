@@ -1,4 +1,4 @@
-import { closeDBConnection, formattedHourlyMessage, getIncompleteTodosForToday, getIncompleteTodosFromPreviousDay, sendMessage } from "../utils/functions.js";
+import { closeDBConnection, formattedHourlyMessage, getIncompleteTodosForToday, getIncompleteTodosFromPreviousDay, insertMessage, sendMessage, } from "../utils/functions.js";
 (async () => {
     const todosFromYesterday = await getIncompleteTodosFromPreviousDay();
     const todosForToday = await getIncompleteTodosForToday();
@@ -7,6 +7,8 @@ import { closeDBConnection, formattedHourlyMessage, getIncompleteTodosForToday, 
         closeDBConnection();
         process.exit(0);
     }
-    await sendMessage(hourlyMessage);
+    const res = await sendMessage(hourlyMessage);
+    if (res)
+        await insertMessage(res.result.message_id, true, hourlyMessage);
     await closeDBConnection();
 })();
